@@ -29,7 +29,7 @@ function DrawerNavigators() {
         }}  />
         <Drawer.Screen name='Favorite Screen' component={FavoriteScreen} options={{
             title: 'All Categories',
-            drawerIcon: ({color, size}) => <Ionicons name='star' color={color} size={size} />
+            drawerIcon: ({color, size}) => <Ionicons name='star' color={color} size={size} /> 
         }} />
     </Drawer.Navigator>
 }
