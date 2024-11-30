@@ -1,7 +1,10 @@
 import React from 'react';
 import {Text, View, Pressable, Image, StyleSheet, Platform} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import MealDetails from './MealDetails';
 
 type MealItemProps = {
+    id: string | number;
     title: string;
     imageUrl: string;
     duration: number;
@@ -10,12 +13,20 @@ type MealItemProps = {
 };
 
 function MealItem({
+    id,
     title,
     imageUrl,
     duration,
     complexity,
     affordability,
 }: MealItemProps) {
+    const navigation = useNavigation<any>();
+
+    function selectMealItemHandler() {
+        navigation.navigate('MealDetail', {
+            mealId: id,
+        });
+    }
     return (
         <View style={styles.mealItem}>
             <View style={styles.innerContainer}>
@@ -24,20 +35,18 @@ function MealItem({
                     style={({pressed}) =>
                         pressed ? styles.buttonPressed : null
                     }
+                    onPress={selectMealItemHandler}
                 >
                     <View>
                         <Image source={{uri: imageUrl}} style={styles.image} />
                         <Text style={styles.title}>{title}</Text>
                     </View>
-                    <View style={styles.details}>
-                        <Text style={styles.detailItem}>{duration} m</Text>
-                        <Text style={styles.detailItem}>
-                            {complexity.toUpperCase()}
-                        </Text>
-                        <Text style={styles.detailItem}>
-                            {affordability.toUpperCase()}
-                        </Text>
-                    </View>
+
+                    <MealDetails
+                        duration={duration}
+                        complexity={complexity}
+                        affordability={affordability}
+                    />
                 </Pressable>
             </View>
         </View>
@@ -59,7 +68,7 @@ const styles = StyleSheet.create({
         shadowRadius: 8,
     },
     buttonPressed: {
-        opacity: 0.5
+        opacity: 0.5,
     },
     innerContainer: {
         borderRadius: 8,
@@ -74,15 +83,5 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 18,
         margin: 8,
-    },
-    details: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 8,
-    },
-    detailItem: {
-        marginHorizontal: 4,
-        fontSize: 12,
     },
 });
