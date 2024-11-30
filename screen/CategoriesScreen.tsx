@@ -7,7 +7,9 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack'; // Import
 function CategoriesScreen({navigation}: {navigation: any}) {
     function renderCategoryItem({item}: {item: any}): React.ReactElement {
         function pressHandler() {
-            navigation.navigate('MealsOverview');
+            navigation.navigate('MealsOverview', {
+                categoryId: item.id
+            });
         }
 
         return (
