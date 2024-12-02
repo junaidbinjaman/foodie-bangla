@@ -1,27 +1,42 @@
-import React, { useLayoutEffect } from 'react';
+import React, {useContext, useLayoutEffect} from 'react';
 import {Text, View, Image, StyleSheet, ScrollView, Button} from 'react-native';
 import {MEALS} from '../assets/data/dummy-data';
 import MealDetails from '../components/MealDetails';
 import Subtitle from '../components/MealDetail/Subtitle';
 import List from '../components/MealDetail/List';
 import IconButton from '../components/IconButton';
+import {FavoriteContext} from '../store/context/favorites-context';
 
 function MealDetailScreen({route, navigation}: any) {
+    const favoriteMealCtx = useContext(FavoriteContext);
+
     const mealId = route.params.mealId;
 
     const selectedMeal = MEALS.find((meal) => meal.id === mealId);
 
-    function headerButtonPressHandler() {
-      console.log('Pressed')
+    const mealIsFavorite = favoriteMealCtx.ids.includes(mealId);
+
+    function changeFavoriteStatusHandler() {
+        if (mealIsFavorite) {
+          favoriteMealCtx.removeFavorite(mealId);
+        }else {
+          favoriteMealCtx.addFavorite(mealId);
+        }
     }
 
     useLayoutEffect(() => {
-      navigation.setOptions({
-        headerRight: () => {
-          return <IconButton onPress={headerButtonPressHandler} color='white' icon='star' />
-        }
-      })
-    }, [navigation, headerButtonPressHandler])
+        navigation.setOptions({
+            headerRight: () => {
+                return (
+                    <IconButton
+                        onPress={changeFavoriteStatusHandler}
+                        color='white'
+                        icon={mealIsFavorite ? 'star' : 'star-outline'}
+                    />
+                );
+            },
+        });
+    }, [navigation, changeFavoriteStatusHandler]);
 
     return (
         <ScrollView style={styles.rootContainer}>
@@ -51,9 +66,9 @@ function MealDetailScreen({route, navigation}: any) {
 export default MealDetailScreen;
 
 const styles = StyleSheet.create({
-  rootContainer: {
-    marginBottom: 32
-  },
+    rootContainer: {
+        marginBottom: 32,
+    },
     image: {
         width: '100%',
         height: 350,
@@ -69,7 +84,7 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     listOuterContainer: {
-      alignItems: 'center'
+        alignItems: 'center',
     },
     listContainer: {
         width: '80%',
